@@ -1,7 +1,8 @@
 import string
 import sqlite3
 import random
-from flask import Flask, request
+import urllib.parse
+from flask import Flask, request, redirect
 
 app = Flask(__name__)
 
@@ -34,7 +35,6 @@ def add_to_database(website_url):
 
     cursor.execute('SELECT shortcode FROM url_mappings WHERE long_url = ?', (website_url,))
     result = cursor.fetchone()
-    print(result)
     if result:
         shortcode = result[0]
     else:
@@ -45,9 +45,24 @@ def add_to_database(website_url):
 
     return shortcode
 
-@app.route('/')
-def index():
-    return 'hijj'
+@app.route('/home')
+def home():
+    return 'home page'
+
+@app.route('/<shortcode>', methods=['GET'])
+def get_url(shortcode):
+    conn = sqlite3.connect("shortlinks.db")
+    cursor = conn.cursor()
+    cursor.execute('SELECT long_url FROM url_mappings WHERE shortcode = ?', (shortcode,))
+    result = cursor.fetchone()
+    conn.close()
+
+    if result:
+        long_url = result[0]
+        return redirect(long_url)
+    else:
+        return 'Short URL not found'
+
 
 @app.route('/make-short-url', methods=['POST', 'GET'])
 def short_url():
@@ -55,10 +70,14 @@ def short_url():
         data = request.get_json()
         website = data.get('website', None)
 
+        parsed_url = urllib.parse.urlparse(website)
+        if not parsed_url.scheme in ('http', 'https'):
+            return 'Make sure you are sending a vaild website'
+    
+
         code = add_to_database(website)
 
         return f"/{code}"
-
 
 app.run(host="0.0.0.0")
 
