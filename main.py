@@ -14,7 +14,8 @@ cursor.execute(
     '''
     CREATE TABLE IF NOT EXISTS url_mappings (
     shortcode TEXT PRIMARY KEY,
-    long_url TEXT
+    long_url TEXT,
+    amount_used NUMERIC
     )
     '''
 )
@@ -39,7 +40,7 @@ def add_to_database(website_url):
         shortcode = result[0]
     else:
         shortcode = generate_shortcode()
-        cursor.execute('INSERT INTO url_mappings (shortcode, long_url) VALUES (?, ?)', (shortcode, website_url))
+        cursor.execute('INSERT INTO url_mappings (shortcode, long_url, amount_used) VALUES (?, ?, ?)', (shortcode, website_url, 0))
         conn.commit()
     conn.close()
 
@@ -55,14 +56,18 @@ def get_url(shortcode):
     cursor = conn.cursor()
     cursor.execute('SELECT long_url FROM url_mappings WHERE shortcode = ?', (shortcode,))
     result = cursor.fetchone()
-    conn.close()
 
     if result:
         long_url = result[0]
+        # add one
+        update_query = "UPDATE url_mappings SET amount_used = amount_used + 1 WHERE shortcode = ?"
+        cursor.execute(update_query, (shortcode,))
+        conn.commit()
+        
         return redirect(long_url)
     else:
         return 'Short URL not found'
-
+    conn.close()
 
 @app.route('/make-short-url', methods=['POST', 'GET'])
 def short_url():
@@ -80,10 +85,3 @@ def short_url():
         return f"/{code}"
 
 app.run(host="0.0.0.0")
-
-
-
-# send links
-# return code
-# add link and code to a database
-# when people request code send to link (redirect)
