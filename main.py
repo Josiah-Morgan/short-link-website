@@ -2,7 +2,7 @@ import string
 import sqlite3
 import random
 import urllib.parse
-from flask import Flask, request, redirect
+from flask import Flask, request, redirect, render_template
 
 app = Flask(__name__)
 
@@ -48,7 +48,7 @@ def add_to_database(website_url):
 
 @app.route('/home')
 def home():
-    return 'home page'
+    return render_template('home.html')
 
 @app.route('/<shortcode>', methods=['GET'])
 def get_url(shortcode):
