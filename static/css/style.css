@@ -5,10 +5,46 @@
     --white: #fff;
 }
 
+body {
+    background-color: #000;
+}
+
 .navbar {
     background-color: var(--main) !important;
 }
 
-h1 {
-    color:#3883bc;
+.navbar-brand {
+    color: #fff;
+    font-size: 25px;
+}
+
+.navbar-nav .nav-link{
+    color: #fff !important; 
+    font-size: 18px;
+}
+
+
+.box {
+    background-color: #fff;
+    margin-top: 120px;
+    height: 320px;
+    width: 420px;
+}
+
+.box-title {
+    color: var(--main);
+    padding-left: 20px;
+    font-size: 36px;
+    font-weight: 500;
+}
+
+.box-text-label {
+    padding-left: 10px;
+    color: #000;
+    font-size: 20px;
+}
+
+.box-text {
+    margin-left: 10px;
+    border: 2px solid var(--main);
 }
