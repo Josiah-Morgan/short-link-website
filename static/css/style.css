@@ -39,12 +39,15 @@ body {
 }
 
 .box-text-label {
-    padding-left: 10px;
+    padding-left: 20px;
     color: #000;
     font-size: 20px;
 }
 
 .box-text {
-    margin-left: 10px;
+    margin-left: 20px;
+    width: 150%;
+    height: 50px;
+    color: var(--secondary);
     border: 2px solid var(--main);
 }
