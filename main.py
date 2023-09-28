@@ -2,7 +2,7 @@ import string
 import sqlite3
 import random
 import urllib.parse
-from flask import Flask, request, redirect, render_template
+from flask import Flask, request, redirect, render_template, jsonify
 
 app = Flask(__name__)
 
@@ -69,20 +69,30 @@ def get_url(shortcode):
         return 'Short URL not found'
     conn.close()
 
-@app.route('/make-short-url', methods=['POST', 'GET'])
+@app.route('/make-short-url', methods=['POST'])
 def short_url():
-    if request.method == 'POST':
+
+    content_type = request.headers.get('Content-Type')
+
+    if content_type == 'application/json':
         data = request.get_json()
         website = data.get('website', None)
+    elif content_type == 'application/x-www-form-urlencoded':
+        website = request.form.get('longUrl', None)
+    else:
+        return 'Issue'
 
-        parsed_url = urllib.parse.urlparse(website)
-        if not parsed_url.scheme in ('http', 'https'):
-            return 'Make sure you are sending a vaild website'
+    parsed_url = urllib.parse.urlparse(website)
+    if not parsed_url.scheme in ('http', 'https'):
+        return 'Make sure you are sending a vaild website'
     
 
-        code = add_to_database(website)
+    code = add_to_database(website)
 
-        return f"/{code}"
+    if content_type == 'application/json':
+        return jsonify({'short_url': f'website/{code}', 'shortcode': code, 'long_url': website}) # put times used
+    else:
+        return render_template('made_short_link.html', shortcode=code)
 
-app.run(host="0.0.0.0")
+app.run(host="0.0.0.0", debug=True)
 
