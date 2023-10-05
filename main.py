@@ -29,22 +29,47 @@ def generate_shortcode():
     shortcode = ''.join(random.choice(characters) for _ in range(6))
     return shortcode
 
-def add_to_database(website_url):
+def add_to_database(website_url, alias):
     """Adds a shortcode and website to the database"""
+
     conn = sqlite3.connect('shortlinks.db')
     cursor = conn.cursor()
+
+    if alias:
+        shortcode = alias
+        check = check_shortcode_in_database(shortcode)
+        if check:
+            cursor.execute('INSERT INTO url_mappings (shortcode, long_url, amount_used) VALUES (?, ?, ?)', (shortcode, website_url, 0))
+            conn.commit()
+            conn.close()
+            return True, shortcode
+        else:
+            return False, 'Alias already used'
+
 
     cursor.execute('SELECT shortcode FROM url_mappings WHERE long_url = ?', (website_url,))
     result = cursor.fetchone()
     if result:
         shortcode = result[0]
-    else:
+    else:            
         shortcode = generate_shortcode()
         cursor.execute('INSERT INTO url_mappings (shortcode, long_url, amount_used) VALUES (?, ?, ?)', (shortcode, website_url, 0))
         conn.commit()
     conn.close()
 
-    return shortcode
+    return True, shortcode
+
+def check_shortcode_in_database(shortcode):
+    conn = sqlite3.connect('shortlinks.db')
+    cursor = conn.cursor()
+
+    cursor.execute('SELECT shortcode FROM url_mappings WHERE shortcode = ?', (shortcode,))
+    result = cursor.fetchone()
+    if result:
+        return False
+    else:
+        return True
+
 
 @app.route('/home')
 def home():
@@ -79,6 +104,7 @@ def short_url():
         website = data.get('website', None)
     elif content_type == 'application/x-www-form-urlencoded':
         website = request.form.get('longUrl', None)
+        alias = request.form.get('alias', None)
     else:
         return 'Issue'
 
@@ -87,12 +113,16 @@ def short_url():
         return 'Make sure you are sending a vaild website'
     
 
-    code = add_to_database(website)
+    check, message = add_to_database(website, alias)
+    if not check:
+        return jsonify({'Erorr': message})
+    
+    # message = shortcode
 
     if content_type == 'application/json':
-        return jsonify({'short_url': f'website/{code}', 'shortcode': code, 'long_url': website}) # put times used
+        return jsonify({'short_url': f'website/{message}', 'shortcode': message, 'long_url': website}) # put times used
     else:
-        return render_template('made_short_link.html', shortcode=code)
+        return render_template('made_short_link.html', shortcode=message, long_url=website)
 
 app.run(host="0.0.0.0", debug=True)
 

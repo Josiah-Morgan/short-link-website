@@ -1,6 +1,6 @@
 :root {
     --main: #3883bc;
-    --secondary: #ebc1d6;
+    --secondary: #198754;
     --black: #000;
     --white: #fff;
 }
@@ -27,15 +27,16 @@ body {
 .box {
     background-color: #fff;
     margin-top: 120px;
-    height: 320px;
+    border-radius: 10px;
+    height: 340px;
     width: 420px;
 }
 
 .box-title {
     color: var(--main);
     padding-left: 20px;
-    font-size: 36px;
     font-weight: 500;
+    font-size: 36px;
 }
 
 .box-text-label {
@@ -46,8 +47,43 @@ body {
 
 .box-text {
     margin-left: 20px;
-    width: 150%;
+    width: 165%;
     height: 50px;
     color: var(--secondary);
     border: 2px solid var(--main);
+}
+
+.submit-button {
+    margin-top: 20px;
+    margin-left: 10px;
+
+    width: 175%;
+    border-radius: 75px;
+    padding-top: 8px;
+    line-height: 50px;
+    font-size: 20px;
+}
+
+
+.fake-text-boxf {
+    margin-left: 20px;
+    padding-left: 10px;
+    padding-top: 10px;
+    width: 90%;
+    height: 50px;
+    color: gray;
+    border-radius: 5px;
+    border: 2px solid var(--main);
+}
+
+.fake-text-box {
+    margin-left: 20px;
+    padding: 10px;
+    width: 90%;
+    min-height: 50px; /* Change to min-height to allow the box to expand if needed */
+    color: gray;
+    border-radius: 5px;
+    border: 2px solid var(--main);
+    overflow: auto; /* Add overflow property to enable scrolling for overflowed content */
+    white-space: nowrap; /* Add white-space property to prevent text wrapping */
 }
