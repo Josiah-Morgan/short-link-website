@@ -1,8 +1,9 @@
-import string
-import sqlite3
 import random
+import sqlite3
+import string
 import urllib.parse
-from flask import Flask, request, redirect, render_template, jsonify
+
+from flask import Flask, jsonify, redirect, render_template, request
 
 app = Flask(__name__)
 
@@ -123,6 +124,18 @@ def short_url():
         return jsonify({'short_url': f'website/{message}', 'shortcode': message, 'long_url': website}) # put times used
     else:
         return render_template('made_short_link.html', shortcode=message, long_url=website)
+
+#@app.route('/generate-qr', methods=['POST'])
+#def generate_qr_code():
+    #website_url = request.json.get('url')
+    #data = "https://www.thepythoncode.com"
+    # output file name
+    #filename = "site.png"
+    # generate qr code
+    #img = qrcode.make(data)
+    # save img to a file
+    #img.save(filename)
+    #return jsonify({'message': 'QR code generated successfully'})
 
 app.run(host="0.0.0.0", debug=True)
 

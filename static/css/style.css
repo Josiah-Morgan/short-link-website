@@ -64,18 +64,6 @@ body {
     font-size: 20px;
 }
 
-
-.fake-text-boxf {
-    margin-left: 20px;
-    padding-left: 10px;
-    padding-top: 10px;
-    width: 90%;
-    height: 50px;
-    color: gray;
-    border-radius: 5px;
-    border: 2px solid var(--main);
-}
-
 .fake-text-box {
     margin-left: 20px;
     padding: 10px;
@@ -86,4 +74,12 @@ body {
     border: 2px solid var(--main);
     overflow: auto; /* Add overflow property to enable scrolling for overflowed content */
     white-space: nowrap; /* Add white-space property to prevent text wrapping */
+}
+
+.copy-button {
+    margin-left: 20px;
+    margin-top: 2px;
+    border-radius: 5px;
+    border: 2px solid var(--main);
+    color: var(--secondary)
 }
