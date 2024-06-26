@@ -48,27 +48,16 @@
     </body>
     <script>
       document.getElementById('copy-button').addEventListener('click', function () {
-          // Get the text content of the div
           var contentToCopy = document.getElementById('content-to-copy').textContent;
-
-          // Create a new textarea element to temporarily hold the text
           var textarea = document.createElement('textarea');
           textarea.value = contentToCopy;
-
-          // Append the textarea element to the document
           document.body.appendChild(textarea);
 
-          // Select the text in the textarea
           textarea.select();
           textarea.setSelectionRange(0, 99999); // For mobile devices
 
-          // Copy the selected text to the clipboard
           document.execCommand('copy');
-
-          // Remove the temporary textarea
           document.body.removeChild(textarea);
-
-          // Provide feedback to the user (optional)
           alert('Copied to clipboard: ' + contentToCopy);
       });
 
